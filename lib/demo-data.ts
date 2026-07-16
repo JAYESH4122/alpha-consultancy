@@ -138,10 +138,10 @@ export const initialDemoState: DemoState = {
     },
   ],
   legalDocuments: [
-    { id: "legal-privacy-1", name: "Privacy Notice", version: "v1.0", audience: "Candidate & employer", status: "published", publishedAt: "2026-07-12T08:00:00.000Z", content: "Explains what personal data BridgeHire collects, why it is processed, and how users exercise their rights." },
+    { id: "legal-privacy-1", name: "Privacy Notice", version: "v1.0", audience: "Candidate & employer", status: "published", publishedAt: "2026-07-12T08:00:00.000Z", content: "Explains what personal data Alpha Consultancy collects, why it is processed, and how users exercise their rights." },
     { id: "legal-candidate-1", name: "Candidate Terms", version: "v1.0", audience: "Candidate", status: "published", publishedAt: "2026-07-12T08:05:00.000Z", content: "Covers candidate responsibilities, screening, consent, and interview handoff." },
     { id: "legal-employer-1", name: "Employer Data-Use Terms", version: "v1.0", audience: "Employer", status: "published", publishedAt: "2026-07-12T08:10:00.000Z", content: "Restricts candidate data to approved recruitment purposes." },
-    { id: "legal-application-1", name: "Application Consent", version: "v1.0", audience: "Candidate", status: "published", publishedAt: "2026-07-12T08:15:00.000Z", content: "Allows BridgeHire to screen a profile for one selected job." },
+    { id: "legal-application-1", name: "Application Consent", version: "v1.0", audience: "Candidate", status: "published", publishedAt: "2026-07-12T08:15:00.000Z", content: "Allows Alpha Consultancy to screen a profile for one selected job." },
     { id: "legal-handoff-1", name: "Interview Handoff Consent", version: "v1.0", audience: "Candidate", status: "published", publishedAt: "2026-07-12T08:20:00.000Z", content: "Authorizes identity and resume sharing with one verified employer." },
   ],
   dataRequests: [],

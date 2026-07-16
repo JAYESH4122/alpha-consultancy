@@ -26,10 +26,10 @@ export default function CandidateMatchesPage() {
         <div className="match-action"><strong>₹{job.salaryMin.toLocaleString("en-IN")}–₹{job.salaryMax.toLocaleString("en-IN")}</strong><span>per month</span><button className="button button-primary button-full" disabled={applied} onClick={() => setApplyingTo(job.id)}>{applied ? "Interest submitted" : "Show interest"}</button></div>
 
         {applying ? <form className="interest-form" action={(formData) => { const answers = job.screeningQuestions.map((_, index) => String(formData.get(`answer-${index}`))); const result = submitInterest(job.id, answers, formData.get("consent") === "on"); setMessage(result.message); if (result.ok) setApplyingTo(null); }}>
-          <div className="interest-form-heading"><div><h3>Submit interest privately</h3><p>Your response goes only to BridgeHire’s admin screening team.</p></div><button type="button" className="icon-button" aria-label="Close application form" onClick={() => setApplyingTo(null)}><X size={17} /></button></div>
+          <div className="interest-form-heading"><div><h3>Submit interest privately</h3><p>Your response goes only to Alpha Consultancy’s admin screening team.</p></div><button type="button" className="icon-button" aria-label="Close application form" onClick={() => setApplyingTo(null)}><X size={17} /></button></div>
           <div className="application-summary"><FileText size={18} /><div><strong>Selected resume</strong><span>{candidate.resumeName ?? "No resume uploaded"}</span></div></div>
           {job.screeningQuestions.map((question, index) => <label key={question}>{question}<textarea name={`answer-${index}`} rows={2} required /></label>)}
-          <label className="checkbox-label"><input name="consent" type="checkbox" required /> I accept Application Consent v1.0 and allow BridgeHire to screen this application.</label>
+          <label className="checkbox-label"><input name="consent" type="checkbox" required /> I accept Application Consent v1.0 and allow Alpha Consultancy to screen this application.</label>
           <div className="interest-form-footer"><span><ShieldCheck size={14} /> Employer identity remains hidden.</span><button className="button button-primary">Accept & submit interest</button></div>
         </form> : null}
       </article>;

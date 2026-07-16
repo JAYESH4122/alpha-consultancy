@@ -46,7 +46,7 @@ export function AppShell({ role, children }: { role: Role; children: React.React
     <div className="app-shell">
       <aside className={`sidebar ${mobileOpen ? "sidebar-open" : ""}`}>
         <div className="sidebar-top">
-          <Link className="brand brand-inverse" href="/"><span className="brand-mark"><ShieldCheck size={19} /></span><span>BridgeHire</span></Link>
+          <Link className="brand brand-inverse" href="/"><span className="brand-mark"><ShieldCheck size={19} /></span><span>Alpha Consultancy</span></Link>
           <button className="icon-button mobile-close" onClick={() => setMobileOpen(false)} aria-label="Close navigation"><X size={20} /></button>
         </div>
         <div className="role-label"><span>{roleLabel}</span><ChevronDown size={15} /></div>

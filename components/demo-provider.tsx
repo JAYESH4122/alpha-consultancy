@@ -28,7 +28,7 @@ type DemoContextValue = DemoState & {
   setEmployerVerification: (status: EmployerVerification["status"], notes: string) => void;
 };
 
-const STORAGE_KEY = "bridgehire-demo-v4";
+const STORAGE_KEY = "alpha-consultancy-demo-v4";
 const DemoContext = createContext<DemoContextValue | null>(null);
 
 const now = () => new Date().toISOString();

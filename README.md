@@ -1,6 +1,6 @@
-# BridgeHire
+# Alpha Consultancy
 
-BridgeHire is a mobile-friendly, privacy-first recruitment web app for candidates, employers, and an admin screening team. Employers and candidates remain anonymous to one another until screening, consent, employer data-use acceptance, and an admin-controlled interview handoff are complete.
+Alpha Consultancy is a mobile-friendly, privacy-first recruitment web app for candidates, employers, and an admin screening team. Employers and candidates remain anonymous to one another until screening, consent, employer data-use acceptance, and an admin-controlled interview handoff are complete.
 
 ## Working local product
 

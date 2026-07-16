@@ -29,7 +29,7 @@ export default function AdminApplicationsPage() {
       const next = nextStatus[application.status];
       const allPassed = Object.values(application.screeningChecks).every((status) => status === "passed");
       const needsPassedChecks = application.status === "admin_screening" && !allPassed;
-      const message = encodeURIComponent(`Hello, this is BridgeHire regarding ${application.reference}. Please reply when convenient. No employer details are shared at this stage.`);
+      const message = encodeURIComponent(`Hello, this is Alpha Consultancy regarding ${application.reference}. Please reply when convenient. No employer details are shared at this stage.`);
 
       return <article className="screening-card" key={application.id}>
         <div className="screening-identity"><div className="candidate-avatar">AN</div><div><span>Admin-only identity</span><h2>{candidate.name}</h2><p>{candidate.city} · {candidate.experienceYears} years · {candidate.resumeName}</p></div></div>

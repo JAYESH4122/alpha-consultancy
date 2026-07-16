@@ -12,7 +12,7 @@ const roles = [
 export default function LoginPage() {
   return (
     <main className="login-page">
-      <Link className="brand" href="/"><span className="brand-mark"><ShieldCheck size={20} /></span><span>BridgeHire</span></Link>
+      <Link className="brand" href="/"><span className="brand-mark"><ShieldCheck size={20} /></span><span>Alpha Consultancy</span></Link>
       <section className="login-panel">
         <PhoneAuth />
         <AdminAuth />

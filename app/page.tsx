@@ -11,9 +11,9 @@ export default function Home() {
   return (
     <main className="marketing-page">
       <header className="marketing-nav shell-width">
-        <Link className="brand" href="/" aria-label="BridgeHire home">
+        <Link className="brand" href="/" aria-label="Alpha Consultancy home">
           <span className="brand-mark"><ShieldCheck size={20} /></span>
-          <span>BridgeHire</span>
+          <span>Alpha Consultancy</span>
         </Link>
         <nav aria-label="Main navigation">
           <a href="#how-it-works">How it works</a>
@@ -25,7 +25,7 @@ export default function Home() {
       <section className="hero shell-width">
         <div className="hero-copy">
           <h1>Recruitment with a trusted human in the middle.</h1>
-          <p>Employers find verified people. Candidates find legitimate work. BridgeHire protects both sides until an interview is ready.</p>
+          <p>Employers find verified people. Candidates find legitimate work. Alpha Consultancy protects both sides until an interview is ready.</p>
           <div className="hero-actions">
             <Link className="button button-primary" href="/login">Explore the web app <ArrowRight size={18} /></Link>
             <a className="text-link" href="#how-it-works">See the process</a>
@@ -42,7 +42,7 @@ export default function Home() {
             <div><strong>Employer requirement</strong><small>Company identity protected</small></div>
             <span className="status status-review">Under review</span>
           </div>
-          <div className="workflow-rail"><span /><b>BridgeHire review</b><span /></div>
+          <div className="workflow-rail"><span /><b>Alpha Consultancy review</b><span /></div>
           <div className="workflow-party">
             <span className="workflow-icon candidate"><UserRoundSearch size={20} /></span>
             <div><strong>Candidate match</strong><small>Profile shared with consent</small></div>
@@ -64,7 +64,7 @@ export default function Home() {
         <p>Employers never browse candidate identities. Candidates never see company contact details before clearance. The admin team controls every release and leaves a complete audit trail.</p>
         <Link className="button button-light" href="/login">View role workspaces <ArrowRight size={17} /></Link>
       </section>
-      <footer className="marketing-footer shell-width"><span>© 2026 BridgeHire</span><span>Privacy-first recruitment operations</span></footer>
+      <footer className="marketing-footer shell-width"><span>© 2026 Alpha Consultancy</span><span>Privacy-first recruitment operations</span></footer>
     </main>
   );
 }
