@@ -16,6 +16,7 @@ export default function Home() {
           <span>Alpha Consultancy</span>
         </Link>
         <nav aria-label="Main navigation">
+          <Link href="/tour">Product tour</Link>
           <a href="#how-it-works">How it works</a>
           <a href="#privacy">Privacy</a>
         </nav>
@@ -27,8 +28,8 @@ export default function Home() {
           <h1>Recruitment with a trusted human in the middle.</h1>
           <p>Employers find verified people. Candidates find legitimate work. Alpha Consultancy protects both sides until an interview is ready.</p>
           <div className="hero-actions">
-            <Link className="button button-primary" href="/login">Explore the web app <ArrowRight size={18} /></Link>
-            <a className="text-link" href="#how-it-works">See the process</a>
+            <Link className="button button-primary" href="/tour">See the guided tour <ArrowRight size={18} /></Link>
+            <Link className="text-link" href="/login">Open role workspaces</Link>
           </div>
           <div className="trust-line"><ShieldCheck size={17} /> No direct contact before verified interview handoff</div>
         </div>
@@ -62,7 +63,7 @@ export default function Home() {
       <section className="privacy-section shell-width" id="privacy">
         <div><ShieldCheck size={28} /><h2>Built around privacy, not added later.</h2></div>
         <p>Employers never browse candidate identities. Candidates never see company contact details before clearance. The admin team controls every release and leaves a complete audit trail.</p>
-        <Link className="button button-light" href="/login">View role workspaces <ArrowRight size={17} /></Link>
+        <Link className="button button-light" href="/tour">Follow the full journey <ArrowRight size={17} /></Link>
       </section>
       <footer className="marketing-footer shell-width"><span>© 2026 Alpha Consultancy</span><span>Privacy-first recruitment operations</span></footer>
     </main>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bell, BriefcaseBusiness, Building2, CalendarDays, Check, ChevronDown, ClipboardCheck, ContactRound, FileClock, Gavel, LayoutDashboard, LogOut, Menu, RotateCcw, ShieldCheck, UserRound, UsersRound, X } from "lucide-react";
+import { Bell, BriefcaseBusiness, Building2, CalendarDays, Check, ChevronDown, ClipboardCheck, ContactRound, FileClock, Gavel, LayoutDashboard, LogOut, Menu, RotateCcw, Route, ShieldCheck, UserRound, UsersRound, X } from "lucide-react";
 import { useState } from "react";
 import { useDemo } from "@/components/demo-provider";
 import type { Role } from "@/lib/types";
@@ -57,6 +57,7 @@ export function AppShell({ role, children }: { role: Role; children: React.React
           })}
         </nav>
         <div className="sidebar-footer">
+          <Link href="/tour"><Route size={17} /> View product tour</Link>
           <button onClick={resetDemo}><RotateCcw size={17} /> Reset demo data</button>
           <Link href="/login"><LogOut size={17} /> Switch workspace</Link>
         </div>

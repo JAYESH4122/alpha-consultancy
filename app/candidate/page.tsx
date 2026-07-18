@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRight, Bell, BriefcaseBusiness, CheckCircle2, FileText, MapPin, ShieldCheck } from "lucide-react";
 import { useDemo } from "@/components/demo-provider";
 import { PageHeader } from "@/components/page-header";
+import { RoleJourneyBanner } from "@/components/role-journey-banner";
 import { StatusPill } from "@/components/status-pill";
 
 export default function CandidateOverview() {
@@ -14,6 +15,7 @@ export default function CandidateOverview() {
   return (
     <>
       <PageHeader title={`Good morning, ${candidate.name.split(" ")[0]}`} description="Your identity stays private until you approve an interview handoff." action={<Link className="button button-primary" href="/candidate/matches">View matches <ArrowRight size={17} /></Link>} />
+      <RoleJourneyBanner role="candidate" />
       <section className="privacy-banner"><ShieldCheck size={22} /><div><strong>Your privacy is active</strong><p>Employers cannot see your name, phone number, or resume until our team clears an interview and you consent.</p></div></section>
       <div className="metric-row">
         <article><BriefcaseBusiness size={20} /><div><strong>{matches.length}</strong><span>Active matches</span></div></article>

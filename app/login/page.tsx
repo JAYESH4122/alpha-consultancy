@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Building2, ShieldCheck, UserRound, UserRoundCog } from "lucide-react";
+import { ArrowRight, Building2, Route, ShieldCheck, UserRound, UserRoundCog } from "lucide-react";
 import { PhoneAuth } from "@/components/phone-auth";
 import { AdminAuth } from "@/components/admin-auth";
 
@@ -16,7 +16,8 @@ export default function LoginPage() {
       <section className="login-panel">
         <PhoneAuth />
         <AdminAuth />
-        <div className="login-intro"><h1>Choose a workspace</h1><p>This interactive demo keeps data in your browser. Connect Supabase credentials to activate secure phone OTP and production data.</p></div>
+        <div className="login-intro"><h1>Choose a workspace</h1><p>Explore the same recruitment journey from each role. Demo changes stay in this browser and are shared across all three views.</p></div>
+        <Link className="login-tour-link" href="/tour"><Route size={19} /><div><strong>New to the flow?</strong><span>Follow the guided employer-to-interview walkthrough first.</span></div><ArrowRight size={17} /></Link>
         <div className="role-options">
           {roles.map(({ href, icon: Icon, title, text }) => (
             <Link href={href} key={href} className="role-option">

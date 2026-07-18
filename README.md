@@ -6,6 +6,10 @@ Alpha Consultancy is a mobile-friendly, privacy-first recruitment web app for ca
 
 The repository includes an interactive browser-persisted demo so the complete three-role workflow can be tested locally without external credentials. Choose a workspace at `/login`; state is shared across the candidate, employer, and admin views through `localStorage`. Use **Reset demo data** in the sidebar to restart the journey.
 
+### Stakeholder product tour
+
+Open `/tour` for a guided five-stage walkthrough from employer requirement to interview handoff. The tour lets reviewers switch between employer, admin, and candidate perspectives at every checkpoint, explains who can see which information, and links each stage to the relevant working dashboard. Each role overview also includes a concise “your role in the journey” guide.
+
 ### Employer
 
 - Organization and verification status
