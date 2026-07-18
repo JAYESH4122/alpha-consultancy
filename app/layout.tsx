@@ -4,7 +4,7 @@ import { DemoProvider } from "@/components/demo-provider";
 
 export const metadata: Metadata = {
   title: "Alpha Consultancy · Privacy-first recruitment",
-  description: "A controlled recruitment workflow connecting employers and candidates through a trusted admin team.",
+  description: "A controlled recruitment workflow connecting employers and employees through a trusted admin team.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

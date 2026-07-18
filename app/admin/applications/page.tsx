@@ -22,7 +22,7 @@ export default function AdminApplicationsPage() {
   const whatsappNumber = process.env.NEXT_PUBLIC_ADMIN_WHATSAPP_NUMBER ?? "919876543210";
 
   return <>
-    <PageHeader title="Candidate screening" description="Run checks, keep private notes, request information, and move only cleared profiles toward interview." />
+    <PageHeader title="Employee screening" description="Run checks, keep private notes, request information, and move only cleared profiles toward interview." />
     {notice ? <div className="toast"><Check size={17} />{notice}</div> : null}
     <div className="screening-list">{applications.map((application) => {
       const job = jobs.find((item) => item.id === application.jobId);
@@ -39,7 +39,7 @@ export default function AdminApplicationsPage() {
         <section className="screening-workbench">
           <div className="workbench-heading"><div><h3>Screening checks</h3><p>Each decision is written to the audit trail.</p></div><label>Case owner<select aria-label="Case owner" value={application.assignedTo ?? "Unassigned"} onChange={(event) => assignApplication(application.id, event.target.value)}><option>Unassigned</option><option>Priya</option><option>Rahul</option><option>Meera</option></select></label></div>
           <div className="check-grid">{Object.entries(checkLabels).map(([check, label]) => <label key={check}>{label}<select aria-label={`${label} check`} value={application.screeningChecks[check as keyof typeof checkLabels]} onChange={(event) => setScreeningCheck(application.id, check as keyof typeof checkLabels, event.target.value as "pending" | "passed" | "failed")}><option value="pending">Pending</option><option value="passed">Passed</option><option value="failed">Failed</option></select></label>)}</div>
-          {job?.screeningQuestions.length ? <div className="screening-answer-list"><h3>Application answers</h3>{job.screeningQuestions.map((question, index) => <div key={question}><strong>{question}</strong><p>{application.screeningAnswers[index] || "No answer provided"}</p></div>)}</div> : null}
+          {job?.employeeScreeningQuestions.length ? <div className="screening-answer-list"><h3>Application answers</h3>{job.employeeScreeningQuestions.map((question, index) => <div key={question}><strong>{question}</strong><p>{application.screeningAnswers[index] || "No answer provided"}</p></div>)}</div> : null}
           <form className="note-form" action={(formData) => { const note = String(formData.get("note")); addScreeningNote(application.id, note); setNotice(`Private note saved for ${application.reference}.`); }}>
             <label><NotebookPen size={15} /> Private admin note<input name="note" placeholder="Record verification evidence or follow-up" required /></label>
             <button className="button button-secondary">Save note</button>
@@ -48,7 +48,7 @@ export default function AdminApplicationsPage() {
         </section>
 
         <div className="screening-actions">
-          <a className="button button-secondary" target="_blank" rel="noreferrer" href={`https://wa.me/${whatsappNumber}?text=${message}`}><MessageCircle size={16} /> WhatsApp candidate</a>
+          <a className="button button-secondary" target="_blank" rel="noreferrer" href={`https://wa.me/${whatsappNumber}?text=${message}`}><MessageCircle size={16} /> WhatsApp employee</a>
           {!['rejected', 'withdrawn', 'interview_scheduled', 'interview_completed'].includes(application.status) ? <>
             <button className="button button-secondary" onClick={() => { setApplicationStatus(application.id, "needs_information"); setNotice(`${application.reference} moved to needs information.`); }}><CircleAlert size={16} /> Request information</button>
             <button className="button button-danger" onClick={() => { setApplicationStatus(application.id, "rejected"); setNotice(`${application.reference} rejected.`); }}><XCircle size={16} /> Reject</button>
@@ -57,6 +57,6 @@ export default function AdminApplicationsPage() {
         </div>
         {needsPassedChecks ? <div className="secure-note"><ShieldCheck size={16} /> Pass identity, resume, and eligibility checks before shortlisting.</div> : null}
       </article>;
-    })}{applications.length === 0 ? <div className="empty-state panel"><ShieldCheck size={32} /><h2>No candidates waiting</h2><p>Candidate interest will appear after an approved job is matched.</p></div> : null}</div>
+    })}{applications.length === 0 ? <div className="empty-state panel"><ShieldCheck size={32} /><h2>No employees waiting</h2><p>Employee interest will appear after an approved job is matched.</p></div> : null}</div>
   </>;
 }

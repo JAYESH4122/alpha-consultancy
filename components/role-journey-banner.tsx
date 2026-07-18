@@ -7,19 +7,19 @@ const roleGuidance = {
     icon: Building2,
     step: "Starts the journey",
     title: "You define the role. Alpha Consultancy manages the connection.",
-    description: "Submit a complete requirement, follow approval, and see candidate identities only after an approved handoff.",
+    description: "Submit a complete job, follow approval, and see employee details only after an approved interview connection.",
   },
   admin: {
     icon: ShieldCheck,
     step: "Controls every gate",
     title: "You verify, screen, consent, and release.",
-    description: "The admin team is the only party that can see both sides before the interview handoff.",
+    description: "Only the admin team can see both sides before an interview is approved.",
   },
   candidate: {
     icon: UserRound,
     step: "Chooses and consents",
     title: "You explore private matches and control identity sharing.",
-    description: "Review anonymized roles, show interest, complete screening, and approve the employer-specific handoff.",
+    description: "Review jobs with company details hidden, show interest, complete screening, and approve sharing for the interview.",
   },
 } as const;
 

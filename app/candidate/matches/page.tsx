@@ -4,6 +4,7 @@ import { CheckCircle2, FileText, MapPin, ShieldCheck, X } from "lucide-react";
 import { useState } from "react";
 import { useDemo } from "@/components/demo-provider";
 import { PageHeader } from "@/components/page-header";
+import { toEmployeeJobPreview } from "@/lib/job-privacy";
 
 export default function CandidateMatchesPage() {
   const { matches, jobs, applications, candidate, submitInterest } = useDemo();
@@ -12,17 +13,18 @@ export default function CandidateMatchesPage() {
 
   return <>
     <PageHeader title="Job matches" description="Only verified, approved opportunities matching your preferences appear here." />
-    <section className="identity-notice"><ShieldCheck size={18} /><span>Company names and contact details stay hidden until a cleared interview handoff.</span></section>
+    <section className="identity-notice"><ShieldCheck size={18} /><span>Company name, exact work area, address, contact, and interview details stay hidden until the admin approves an interview.</span></section>
     {message ? <div className="toast" role="status"><CheckCircle2 size={17} />{message}</div> : null}
     <div className="match-list">{matches.map((match) => {
-      const job = jobs.find((item) => item.id === match.jobId);
-      if (!job) return null;
+      const protectedJob = jobs.find((item) => item.id === match.jobId);
+      if (!protectedJob) return null;
+      const job = toEmployeeJobPreview(protectedJob);
       const applied = applications.some((application) => application.jobId === job.id && application.status !== "withdrawn");
       const applying = applyingTo === job.id;
 
       return <article className="match-card" key={match.id}>
         <div className="match-score-block"><strong>{match.score}</strong><span>match</span></div>
-        <div className="match-content"><span className="protected-label"><ShieldCheck size={13} /> Verified employer · identity protected</span><h2>{job.title}</h2><p className="job-meta"><MapPin size={15} /> {job.workArea}, {job.city}<span />{job.workMode}<span />{job.employmentType}<span />{job.shift} shift</p><p>{job.description}</p><div className="skill-row">{job.requiredSkills.map((skill) => <span key={skill}>{skill}</span>)}</div><div className="reason-row">{match.reasons.map((reason) => <span key={reason.label}><CheckCircle2 size={14} /> {reason.label} <b>+{reason.points}</b></span>)}</div></div>
+        <div className="match-content"><span className="protected-label"><ShieldCheck size={13} /> Verified employer · identity protected</span><h2>{job.title}</h2><p className="job-meta"><span><MapPin size={15} /> {job.locationLabel}</span><span>{job.workMode}</span><span>{job.employmentType}</span><span>{job.shift} shift</span></p><p>{job.summary}</p><div className="skill-row">{job.requiredSkills.map((skill) => <span key={skill}>{skill}</span>)}</div><div className="reason-row">{match.reasons.map((reason) => <span key={reason.label}><CheckCircle2 size={14} /> {reason.label} <b>+{reason.points}</b></span>)}</div></div>
         <div className="match-action"><strong>₹{job.salaryMin.toLocaleString("en-IN")}–₹{job.salaryMax.toLocaleString("en-IN")}</strong><span>per month</span><button className="button button-primary button-full" disabled={applied} onClick={() => setApplyingTo(job.id)}>{applied ? "Interest submitted" : "Show interest"}</button></div>
 
         {applying ? <form className="interest-form" action={(formData) => { const answers = job.screeningQuestions.map((_, index) => String(formData.get(`answer-${index}`))); const result = submitInterest(job.id, answers, formData.get("consent") === "on"); setMessage(result.message); if (result.ok) setApplyingTo(null); }}>

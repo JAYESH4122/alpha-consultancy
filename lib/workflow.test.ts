@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { canReleaseIdentity, canTransitionApplication, canTransitionJob } from "@/lib/workflow";
+import { canReleaseIdentity, canReviewEmployerVerification, canSubmitEmployerVerification, canTransitionApplication, canTransitionJob, canVerifyEmployer } from "@/lib/workflow";
 import type { Application } from "@/lib/types";
 
 const readyApplication: Application = {
@@ -29,6 +29,16 @@ describe("controlled workflow state transitions", () => {
     expect(canTransitionJob("submitted", "approved")).toBe(true);
     expect(canTransitionJob("approved", "paused")).toBe(true);
     expect(canTransitionJob("closed", "approved")).toBe(false);
+  });
+
+  it("requires employer submission and all admin checks before verification", () => {
+    expect(canSubmitEmployerVerification("pending")).toBe(true);
+    expect(canSubmitEmployerVerification("rejected")).toBe(true);
+    expect(canSubmitEmployerVerification("under_review")).toBe(false);
+    expect(canReviewEmployerVerification("under_review")).toBe(true);
+    expect(canReviewEmployerVerification("verified")).toBe(false);
+    expect(canVerifyEmployer({ registration: true, contact: true, dataUseTerms: true })).toBe(true);
+    expect(canVerifyEmployer({ registration: true, contact: false, dataUseTerms: true })).toBe(false);
   });
 
   it("requires screening, both acceptances, and interview-ready status before release", () => {

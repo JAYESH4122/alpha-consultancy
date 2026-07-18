@@ -4,9 +4,9 @@ import { PhoneAuth } from "@/components/phone-auth";
 import { AdminAuth } from "@/components/admin-auth";
 
 const roles = [
-  { href: "/candidate", icon: UserRound, title: "Candidate", text: "Discover private job matches and manage your applications." },
-  { href: "/employer", icon: Building2, title: "Employer", text: "Post requirements and follow your verified hiring pipeline." },
-  { href: "/admin", icon: UserRoundCog, title: "Admin", text: "Review jobs, screen candidates, and control handoffs." },
+  { href: "/employee", icon: UserRound, title: "Employee", text: "Discover private job matches and manage your applications." },
+  { href: "/employer", icon: Building2, title: "Employer", text: "Post jobs and follow every approved application." },
+  { href: "/admin", icon: UserRoundCog, title: "Admin", text: "Verify employers, approve jobs, and manage interviews." },
 ];
 
 export default function LoginPage() {

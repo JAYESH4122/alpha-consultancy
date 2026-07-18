@@ -2,9 +2,10 @@
 
 import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { initialDemoState } from "@/lib/demo-data";
+import { isEmployeePreviewSafe } from "@/lib/job-privacy";
 import { calculateMatches } from "@/lib/matching";
 import type { ApplicationStatus, CandidateProfile, DataRequest, DemoState, EmployerVerification, Job, LegalDocument, Role } from "@/lib/types";
-import { canReleaseIdentity, canTransitionApplication, canTransitionJob } from "@/lib/workflow";
+import { canReleaseIdentity, canReviewEmployerVerification, canSubmitEmployerVerification, canTransitionApplication, canTransitionJob, canVerifyEmployer } from "@/lib/workflow";
 
 type DemoContextValue = DemoState & {
   resetDemo: () => void;
@@ -25,10 +26,12 @@ type DemoContextValue = DemoState & {
   publishLegalDocument: (document: Omit<LegalDocument, "id" | "status" | "publishedAt">) => void;
   submitDataRequest: (type: DataRequest["type"]) => void;
   setDataRequestStatus: (requestId: string, status: DataRequest["status"]) => void;
-  setEmployerVerification: (status: EmployerVerification["status"], notes: string) => void;
+  submitEmployerVerification: () => { ok: boolean; message: string };
+  setEmployerVerificationCheck: (check: keyof EmployerVerification["checks"], passed: boolean) => void;
+  decideEmployerVerification: (status: "verified" | "rejected", notes: string) => { ok: boolean; message: string };
 };
 
-const STORAGE_KEY = "alpha-consultancy-demo-v4";
+const STORAGE_KEY = "alpha-consultancy-demo-v5";
 const DemoContext = createContext<DemoContextValue | null>(null);
 
 const now = () => new Date().toISOString();
@@ -66,7 +69,7 @@ export function DemoProvider({ children }: { children: React.ReactNode }) {
         ...current,
         candidate,
         matches: calculateMatches(current.jobs, candidate),
-        auditEvents: [{ id: crypto.randomUUID(), action: "Candidate profile updated", target: candidate.id, actor: candidate.name, createdAt: now() }, ...current.auditEvents],
+        auditEvents: [{ id: crypto.randomUUID(), action: "Employee profile updated", target: candidate.id, actor: candidate.name, createdAt: now() }, ...current.auditEvents],
       };
     });
   }, []);
@@ -113,6 +116,8 @@ export function DemoProvider({ children }: { children: React.ReactNode }) {
     setState((current) => {
       const previousJob = current.jobs.find((item) => item.id === jobId);
       if (!previousJob || previousJob.status === status || !canTransitionJob(previousJob.status, status)) return current;
+      if (status === "approved" && current.employerVerification.status !== "verified") return current;
+      if (status === "approved" && !isEmployeePreviewSafe(previousJob)) return current;
       const jobs = current.jobs.map((job) => (job.id === jobId ? { ...job, status } : job));
       const job = jobs.find((item) => item.id === jobId);
       const matches = calculateMatches(jobs, current.candidate);
@@ -122,7 +127,7 @@ export function DemoProvider({ children }: { children: React.ReactNode }) {
         jobs,
         matches,
         notifications: newlyMatched && job
-          ? [{ id: crypto.randomUUID(), role: "candidate", title: "A new job matches your profile", body: `${job.title} in ${job.workArea} is now available.`, createdAt: now(), read: false }, ...current.notifications]
+          ? [{ id: crypto.randomUUID(), role: "candidate", title: "A new job matches your profile", body: `${job.title} in ${job.city} is now available.`, createdAt: now(), read: false }, ...current.notifications]
           : current.notifications,
         auditEvents: job
           ? [{ id: crypto.randomUUID(), action: `Job ${status.replaceAll("_", " ")}`, target: job.reference, actor: "Priya · Admin", createdAt: now() }, ...current.auditEvents]
@@ -133,7 +138,7 @@ export function DemoProvider({ children }: { children: React.ReactNode }) {
 
   const submitInterest = useCallback((jobId: string, screeningAnswers: string[] = [], consentAccepted = false) => {
     if (!state.candidate.resumeName) return { ok: false, message: "Upload a resume before showing interest." };
-    if (!state.candidate.termsAccepted) return { ok: false, message: "Accept the current Candidate Terms and Privacy Notice before showing interest." };
+    if (!state.candidate.termsAccepted) return { ok: false, message: "Accept the current Employee Terms and Privacy Notice before showing interest." };
     if (state.applications.some((application) => application.jobId === jobId && application.status !== "withdrawn")) {
       return { ok: false, message: "You already showed interest in this job." };
     }
@@ -161,8 +166,8 @@ export function DemoProvider({ children }: { children: React.ReactNode }) {
         assignedTo: "Unassigned",
         screeningChecks: { identity: "pending", resume: "pending", eligibility: "pending" },
       }, ...current.applications],
-      notifications: [{ id: crypto.randomUUID(), role: "admin", title: "Candidate interest needs screening", body: `A candidate showed interest in ${job.reference}.`, createdAt: now(), read: false }, ...current.notifications],
-      auditEvents: [{ id: crypto.randomUUID(), action: "Interest submitted", target: job.reference, actor: "Candidate · identity protected", createdAt: now() }, ...current.auditEvents],
+      notifications: [{ id: crypto.randomUUID(), role: "admin", title: "Employee interest needs screening", body: `An employee showed interest in ${job.reference}.`, createdAt: now(), read: false }, ...current.notifications],
+      auditEvents: [{ id: crypto.randomUUID(), action: "Interest submitted", target: job.reference, actor: "Employee · identity protected", createdAt: now() }, ...current.auditEvents],
     }));
     return { ok: true, message: "Interest submitted. Our recruitment team will review your profile." };
   }, [state.applications, state.candidate.resumeName, state.candidate.termsAccepted, state.jobs]);
@@ -216,21 +221,21 @@ export function DemoProvider({ children }: { children: React.ReactNode }) {
     setState((current) => ({
       ...current,
       applications: current.applications.map((application) => application.id === applicationId && application.status === "interview_ready" ? { ...application, handoffConsent: true } : application),
-      auditEvents: [{ id: crypto.randomUUID(), action: "Candidate granted handoff consent", target: applicationId, actor: current.candidate.name, createdAt: now() }, ...current.auditEvents],
+      auditEvents: [{ id: crypto.randomUUID(), action: "Employee granted handoff consent", target: applicationId, actor: current.candidate.name, createdAt: now() }, ...current.auditEvents],
     }));
   }, []);
 
   const scheduleInterview = useCallback((applicationId: string, date: string, venue: string) => {
     const application = state.applications.find((item) => item.id === applicationId);
     if (!application || !canReleaseIdentity(application)) {
-      return { ok: false, message: "Interview-ready status, passed screening checks, candidate consent, and employer data-use acceptance are required." };
+      return { ok: false, message: "Interview-ready status, passed screening checks, employee consent, and employer data-use acceptance are required." };
     }
     setState((current) => ({
       ...current,
       applications: current.applications.map((item) => item.id === applicationId ? { ...item, status: "interview_scheduled", identityReleased: true, interviewAt: date, interviewVenue: venue, interviewStatus: "scheduled" } : item),
       notifications: [
         { id: crypto.randomUUID(), role: "candidate", title: "Interview scheduled", body: `Your interview is confirmed for ${new Date(date).toLocaleString("en-IN")}.`, createdAt: now(), read: false },
-        { id: crypto.randomUUID(), role: "employer", title: "Candidate interview scheduled", body: "Candidate details are now available in the controlled handoff record.", createdAt: now(), read: false },
+        { id: crypto.randomUUID(), role: "employer", title: "Employee interview scheduled", body: "Employee details are now available in the controlled handoff record.", createdAt: now(), read: false },
         ...current.notifications,
       ],
       auditEvents: [{ id: crypto.randomUUID(), action: "Interview handoff released", target: applicationId, actor: "Priya · Admin", createdAt: now() }, ...current.auditEvents],
@@ -273,7 +278,7 @@ export function DemoProvider({ children }: { children: React.ReactNode }) {
     setState((current) => ({
       ...current,
       dataRequests: [{ id: `REQ-${String(current.dataRequests.length + 1001)}`, type, status: "submitted", createdAt: now() }, ...current.dataRequests],
-      notifications: [{ id: crypto.randomUUID(), role: "admin", title: "New privacy request", body: `A candidate submitted a ${type.replaceAll("_", " ")} request.`, createdAt: now(), read: false }, ...current.notifications],
+      notifications: [{ id: crypto.randomUUID(), role: "admin", title: "New privacy request", body: `An employee submitted a ${type.replaceAll("_", " ")} request.`, createdAt: now(), read: false }, ...current.notifications],
       auditEvents: [{ id: crypto.randomUUID(), action: "Privacy request submitted", target: type, actor: current.candidate.name, createdAt: now() }, ...current.auditEvents],
     }));
   }, []);
@@ -287,16 +292,55 @@ export function DemoProvider({ children }: { children: React.ReactNode }) {
     }));
   }, []);
 
-  const setEmployerVerification = useCallback((status: EmployerVerification["status"], notes: string) => {
+  const submitEmployerVerification = useCallback(() => {
+    if (!canSubmitEmployerVerification(state.employerVerification.status)) {
+      return { ok: false, message: "This organization has already been submitted for review." };
+    }
     setState((current) => ({
       ...current,
-      employerVerification: { status, notes, updatedAt: now() },
-      notifications: [{ id: crypto.randomUUID(), role: "employer", title: "Employer verification updated", body: `Organization verification is ${status.replaceAll("_", " ")}.`, createdAt: now(), read: false }, ...current.notifications],
-      auditEvents: [{ id: crypto.randomUUID(), action: `Employer verification ${status}`, target: "ORG-1092", actor: "Priya · Admin", createdAt: now() }, ...current.auditEvents],
+      employerVerification: {
+        status: "under_review",
+        notes: "Organization submitted. Admin checks are in progress.",
+        submittedAt: now(),
+        updatedAt: now(),
+        checks: { registration: false, contact: false, dataUseTerms: true },
+      },
+      notifications: [{ id: crypto.randomUUID(), role: "admin", title: "Employer verification submitted", body: "ORG-1092 is ready for registration and contact checks.", createdAt: now(), read: false }, ...current.notifications],
+      auditEvents: [{ id: crypto.randomUUID(), action: "Employer verification submitted", target: "ORG-1092", actor: "Harbor Foods · Employer", createdAt: now() }, ...current.auditEvents],
     }));
+    return { ok: true, message: "Verification submitted to Alpha Consultancy." };
+  }, [state.employerVerification.status]);
+
+  const setEmployerVerificationCheck = useCallback((check: keyof EmployerVerification["checks"], passed: boolean) => {
+    setState((current) => {
+      if (!canReviewEmployerVerification(current.employerVerification.status) || check === "dataUseTerms") return current;
+      return {
+        ...current,
+        employerVerification: {
+          ...current.employerVerification,
+          checks: { ...current.employerVerification.checks, [check]: passed },
+          updatedAt: now(),
+        },
+        auditEvents: [{ id: crypto.randomUUID(), action: `Employer ${check} check ${passed ? "passed" : "reopened"}`, target: "ORG-1092", actor: "Priya · Admin", createdAt: now() }, ...current.auditEvents],
+      };
+    });
   }, []);
 
-  const value = useMemo(() => ({ ...state, resetDemo, addJob, setJobStatus, submitInterest, setApplicationStatus, grantHandoffConsent, scheduleInterview, updateCandidate, uploadResume, markNotificationRead, markAllNotificationsRead, addScreeningNote, setScreeningCheck, assignApplication, updateInterview, publishLegalDocument, submitDataRequest, setDataRequestStatus, setEmployerVerification }), [state, resetDemo, addJob, setJobStatus, submitInterest, setApplicationStatus, grantHandoffConsent, scheduleInterview, updateCandidate, uploadResume, markNotificationRead, markAllNotificationsRead, addScreeningNote, setScreeningCheck, assignApplication, updateInterview, publishLegalDocument, submitDataRequest, setDataRequestStatus, setEmployerVerification]);
+  const decideEmployerVerification = useCallback((status: "verified" | "rejected", notes: string) => {
+    const cleanNotes = notes.trim();
+    if (!canReviewEmployerVerification(state.employerVerification.status)) return { ok: false, message: "Start from an employer-submitted review." };
+    if (status === "verified" && !canVerifyEmployer(state.employerVerification.checks)) return { ok: false, message: "Complete every verification check before approval." };
+    if (status === "rejected" && !cleanNotes) return { ok: false, message: "Add a reason before rejecting the employer." };
+    setState((current) => ({
+      ...current,
+      employerVerification: { ...current.employerVerification, status, notes: cleanNotes || "Registration, contact, and data-use terms verified.", updatedAt: now() },
+      notifications: [{ id: crypto.randomUUID(), role: "employer", title: "Employer verification updated", body: `Organization verification is ${status}.`, createdAt: now(), read: false }, ...current.notifications],
+      auditEvents: [{ id: crypto.randomUUID(), action: `Employer verification ${status}`, target: "ORG-1092", actor: "Priya · Admin", createdAt: now() }, ...current.auditEvents],
+    }));
+    return { ok: true, message: status === "verified" ? "Employer verified. Job publishing and controlled handoffs are now permitted." : "Employer rejected and notified with the private review note." };
+  }, [state.employerVerification]);
+
+  const value = useMemo(() => ({ ...state, resetDemo, addJob, setJobStatus, submitInterest, setApplicationStatus, grantHandoffConsent, scheduleInterview, updateCandidate, uploadResume, markNotificationRead, markAllNotificationsRead, addScreeningNote, setScreeningCheck, assignApplication, updateInterview, publishLegalDocument, submitDataRequest, setDataRequestStatus, submitEmployerVerification, setEmployerVerificationCheck, decideEmployerVerification }), [state, resetDemo, addJob, setJobStatus, submitInterest, setApplicationStatus, grantHandoffConsent, scheduleInterview, updateCandidate, uploadResume, markNotificationRead, markAllNotificationsRead, addScreeningNote, setScreeningCheck, assignApplication, updateInterview, publishLegalDocument, submitDataRequest, setDataRequestStatus, submitEmployerVerification, setEmployerVerificationCheck, decideEmployerVerification]);
   return <DemoContext.Provider value={value}>{children}</DemoContext.Provider>;
 }
 

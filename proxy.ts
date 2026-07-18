@@ -18,13 +18,13 @@ export async function proxy(request: NextRequest) {
     },
   });
   const { data } = await supabase.auth.getClaims();
-  const match = request.nextUrl.pathname.match(/^\/(candidate|employer|admin)(?:\/|$)/);
+  const match = request.nextUrl.pathname.match(/^\/(candidate|employee|employer|admin)(?:\/|$)/);
   if (match) {
     const userId = typeof data?.claims?.sub === "string" ? data.claims.sub : null;
     if (!userId) return NextResponse.redirect(new URL("/login", request.url));
 
     const { data: profile } = await supabase.from("profiles").select("role, status").eq("id", userId).maybeSingle();
-    const requiredRole = match[1];
+    const requiredRole = match[1] === "employee" ? "candidate" : match[1];
     const assuranceLevel = data?.claims?.aal;
     const authorized = profile?.status === "active" && profile.role === requiredRole && (requiredRole !== "admin" || assuranceLevel === "aal2");
     if (!authorized) return NextResponse.redirect(new URL("/login", request.url));

@@ -1,11 +1,12 @@
 "use client";
 
-import { Check, Eye, MessageCircle, X } from "lucide-react";
+import { Check, Eye, MessageCircle, ShieldCheck, X } from "lucide-react";
 import { useState } from "react";
 import { useDemo } from "@/components/demo-provider";
 import { PageHeader } from "@/components/page-header";
 import { StatusPill } from "@/components/status-pill";
 import type { Job, JobStatus } from "@/lib/types";
+import { isEmployeePreviewSafe } from "@/lib/job-privacy";
 
 const lifecycleOptions: Partial<Record<JobStatus, Array<{ value: JobStatus; label: string }>>> = {
   approved: [{ value: "approved", label: "Active" }, { value: "paused", label: "Paused" }, { value: "filled", label: "Filled" }, { value: "closed", label: "Closed" }],
@@ -14,15 +15,20 @@ const lifecycleOptions: Partial<Record<JobStatus, Array<{ value: JobStatus; labe
 };
 
 export default function AdminJobsPage() {
-  const { jobs, setJobStatus } = useDemo();
+  const { jobs, employerVerification, setJobStatus } = useDemo();
   const [notice, setNotice] = useState<string | null>(null);
   const [expandedJob, setExpandedJob] = useState<string | null>(null);
   const reviewJobs = jobs.filter((job) => ["submitted", "under_review", "changes_requested"].includes(job.status));
   const processedJobs = jobs.filter((job) => !["submitted", "under_review", "changes_requested"].includes(job.status));
-  const act = (job: Job, status: JobStatus) => { setJobStatus(job.id, status); setNotice(`${job.title} marked ${status.replaceAll("_", " ")}.`); };
+  const act = (job: Job, status: JobStatus) => {
+    if (status === "approved" && employerVerification.status !== "verified") { setNotice("Verify the employer before publishing any job."); return; }
+    if (status === "approved" && !isEmployeePreviewSafe(job)) { setNotice("The employee preview contains protected employer information and cannot be published."); return; }
+    setJobStatus(job.id, status);
+    setNotice(`${job.title} marked ${status.replaceAll("_", " ")}.`);
+  };
 
   return <>
-    <PageHeader title="Job approval queue" description="Verify legitimacy, salary, location, and eligibility before matching candidates." />
+    <PageHeader title="Job approval queue" description="Verify legitimacy, salary, location, eligibility, and the privacy-safe preview before matching employees." />
     {notice ? <div className="toast" role="status"><Check size={17} />{notice}</div> : null}
     <div className="review-list">
       {reviewJobs.map((job) => <article className="review-card" key={job.id}>
@@ -30,6 +36,7 @@ export default function AdminJobsPage() {
         <div className="review-facts"><div><span>Salary</span><strong>₹{job.salaryMin.toLocaleString("en-IN")}–₹{job.salaryMax.toLocaleString("en-IN")}</strong></div><div><span>Openings</span><strong>{job.openings}</strong></div><div><span>Experience</span><strong>{job.experienceMin}+ years</strong></div><div><span>Shift</span><strong>{job.shift}</strong></div></div>
         <p className="review-description">{job.description}</p>
         <div className="skill-row">{job.requiredSkills.map((skill) => <span key={skill}>{skill}</span>)}</div>
+        <section className="employee-preview-admin"><div><ShieldCheck size={18} /><span><strong>Employee-safe preview</strong><small>Company, exact area, contact, address, full description, and interview details excluded</small></span></div><p>{job.employeeSummary}</p><small>{job.city} only · {job.employeeScreeningQuestions.join(" · ")}</small></section>
         {expandedJob === job.id ? <div className="requirement-detail"><div><span>Education</span><strong>{job.education}</strong></div><div><span>Work mode</span><strong>{job.workMode}</strong></div><div><span>Preferred skills</span><strong>{job.preferredSkills.join(", ") || "None"}</strong></div><div><span>Documents</span><strong>{job.requiredDocuments.join(", ") || "None"}</strong></div><div><span>Interview availability</span><strong>{job.interviewAvailability}</strong></div><div className="wide"><span>Screening questions</span><strong>{job.screeningQuestions.join(" · ") || "None"}</strong></div></div> : null}
         <footer><button className="button button-secondary" onClick={() => setExpandedJob((current) => current === job.id ? null : job.id)}><Eye size={16} /> {expandedJob === job.id ? "Hide requirement" : "Full requirement"}</button>{job.status === "submitted" ? <button className="button button-secondary" onClick={() => act(job, "under_review")}><Eye size={16} /> Start review</button> : null}<button className="button button-secondary" onClick={() => act(job, "changes_requested")}><MessageCircle size={16} /> Request changes</button><button className="button button-danger" onClick={() => act(job, "rejected")}><X size={16} /> Reject</button><button className="button button-primary" onClick={() => act(job, "approved")}><Check size={16} /> Approve & match</button></footer>
       </article>)}

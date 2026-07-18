@@ -321,7 +321,7 @@ td small { margin-top: 2px; color: var(--muted); }
 .skill-row { display: flex; flex-wrap: wrap; gap: 6px; }
 .skill-row span { padding: 4px 8px; color: #4c626c; border: 1px solid #d8e2e5; border-radius: 6px; background: #f8fafb; font-size: 10px; }
 
-/* Candidate */
+/* Employee */
 .match-list, .application-list, .review-list, .screening-list, .handoff-list { display: grid; gap: 14px; }
 .match-card { display: grid; grid-template-columns: 82px minmax(0, 1fr) 190px; gap: 20px; align-items: start; padding: 23px; border: 1px solid var(--line); border-radius: var(--radius); background: white; }
 .match-score-block { width: 70px; aspect-ratio: 1; display: grid; place-content: center; text-align: center; color: var(--teal-700); border: 6px solid #c3e5df; border-radius: 50%; }
@@ -330,7 +330,9 @@ td small { margin-top: 2px; color: var(--muted); }
 .protected-label { display: inline-flex; align-items: center; gap: 5px; }
 .match-content h2 { margin: 7px 0 3px; font-size: 21px; letter-spacing: -.02em; }
 .match-content > p:not(.job-meta) { max-width: 690px; margin: 13px 0; color: #61747c; font-size: 13px; }
-.job-meta span { width: 3px; height: 3px; margin-inline: 5px; border-radius: 50%; background: #9cabb1; }
+.job-meta { flex-wrap: wrap; gap: 5px 12px; }
+.job-meta > span { min-width: 0; display: inline-flex; align-items: center; gap: 5px; overflow-wrap: anywhere; }
+.job-meta > span + span::before { content: ""; width: 3px; height: 3px; flex: 0 0 auto; margin-right: 2px; border-radius: 50%; background: #9cabb1; }
 .reason-row { margin-top: 13px; display: flex; flex-wrap: wrap; gap: 8px 14px; color: var(--green); font-size: 10px; }
 .reason-row span { display: inline-flex; align-items: center; gap: 4px; }
 .reason-row b { color: var(--teal-700); }
@@ -480,6 +482,12 @@ input[aria-invalid="true"], textarea[aria-invalid="true"] { border-color: var(--
 .review-facts span { color: var(--muted); font-size: 9px; text-transform: uppercase; letter-spacing: .06em; }
 .review-facts strong { margin-top: 4px; font-size: 11px; }
 .review-description { color: #61747c; font-size: 12px; }
+.employee-preview-admin { margin-top: 16px; padding: 14px; border: 1px solid #c9e1dd; border-radius: 9px; background: var(--teal-50); }
+.employee-preview-admin > div { display: flex; align-items: flex-start; gap: 9px; color: var(--teal-700); }
+.employee-preview-admin > div svg { flex: 0 0 auto; margin-top: 2px; }
+.employee-preview-admin strong, .employee-preview-admin small { display: block; overflow-wrap: anywhere; }
+.employee-preview-admin small { color: #58716f; font-size: 9px; }
+.employee-preview-admin p { margin: 10px 0 5px; color: #38545b; font-size: 11px; }
 .requirement-detail { margin-top: 16px; padding: 14px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; border: 1px solid #dce7e8; border-radius: 8px; background: #f8fbfb; }
 .requirement-detail > div { display: grid; gap: 3px; }
 .requirement-detail span { color: var(--muted); font-size: 9px; text-transform: uppercase; letter-spacing: .05em; }
@@ -518,6 +526,22 @@ input[aria-invalid="true"], textarea[aria-invalid="true"] { border-color: var(--
 .screening-answer-list p { margin-top: 2px; }
 .verification-notes { margin-top: 18px; }
 .review-actions, .interview-actions, .table-actions { margin-top: 14px; display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 8px; }
+.verification-checklist { margin-top: 18px; padding: 16px; display: grid; gap: 10px; border: 1px solid #cfe2df; border-radius: 10px; background: #f8fcfb; }
+.verification-checklist h3, .verification-checklist p { margin: 0; }
+.verification-checklist h3 { font-size: 14px; }
+.verification-checklist p { color: var(--muted); font-size: 10px; }
+.verification-checklist label { min-width: 0; padding: 11px; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: 10px; border: 1px solid var(--line); border-radius: 8px; background: white; }
+.verification-checklist input { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--teal-700); }
+.verification-checklist strong, .verification-checklist small { display: block; overflow-wrap: anywhere; }
+.verification-checklist strong { font-size: 11px; }
+.verification-checklist small { margin-top: 2px; color: var(--muted); font-size: 9px; font-weight: 500; }
+.verification-state-note { margin-top: 18px; padding: 14px; display: flex; align-items: flex-start; gap: 10px; color: #48606b; border: 1px solid var(--line); border-radius: 9px; background: #f8fafb; }
+.verification-state-note svg { flex: 0 0 auto; color: var(--teal-700); }
+.verification-state-note strong, .verification-state-note p { display: block; margin: 0; }
+.verification-state-note p { margin-top: 2px; color: var(--muted); font-size: 10px; }
+.review-readiness { margin-right: auto; display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 10px; font-weight: 750; }
+.verification-panel .button, .verification-complete { margin-top: 16px; }
+.verification-rejected { color: var(--red); background: var(--red-bg); }
 .table-actions { margin-top: 0; justify-content: flex-start; }
 .reschedule-form { margin-top: 13px; padding-top: 13px; border-top: 1px solid var(--line); }
 .legal-editor { margin-bottom: 18px; }
@@ -664,6 +688,8 @@ input[aria-invalid="true"], textarea[aria-invalid="true"] { border-color: var(--
   .featured-job > .button { justify-self: start; }
   .match-card { grid-template-columns: 1fr; }
   .match-score-block { width: 62px; }
+  .job-meta > span:first-child { flex-basis: 100%; }
+  .job-meta > span:nth-child(2)::before { display: none; }
   .match-action { grid-column: 1; }
   .interest-form-heading, .interest-form-footer { align-items: stretch; flex-direction: column; }
   .interest-form-heading .icon-button { align-self: flex-end; order: -1; }
@@ -692,6 +718,7 @@ input[aria-invalid="true"], textarea[aria-invalid="true"] { border-color: var(--
   .check-grid, .note-form { grid-template-columns: 1fr; }
   .workbench-heading { align-items: stretch; flex-direction: column; }
   .review-actions, .interview-actions { align-items: stretch; flex-direction: column; }
+  .review-readiness { margin-right: 0; }
   .handoff-checks { grid-template-columns: 1fr; }
   .interview-form { grid-template-columns: 1fr; }
   .candidate-directory-card { grid-template-columns: auto 1fr; }

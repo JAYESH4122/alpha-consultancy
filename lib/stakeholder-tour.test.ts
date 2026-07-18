@@ -19,6 +19,6 @@ describe("stakeholder tour", () => {
 
   it("keeps employer access anonymous before the handoff", () => {
     expect(tourStages.slice(0, 4).every((stage) => /anonymous|own job|review status/i.test(stage.visibility.employer))).toBe(true);
-    expect(tourStages[4].visibility.employer).toContain("Released candidate identity");
+    expect(tourStages[4].visibility.employer).toContain("Released employee identity");
   });
 });

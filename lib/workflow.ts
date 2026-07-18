@@ -1,4 +1,4 @@
-import type { Application, ApplicationStatus, JobStatus } from "@/lib/types";
+import type { Application, ApplicationStatus, EmployerVerification, JobStatus } from "@/lib/types";
 
 const applicationTransitions: Record<ApplicationStatus, ApplicationStatus[]> = {
   interest_submitted: ["admin_screening", "needs_information", "rejected", "withdrawn"],
@@ -31,6 +31,18 @@ export function canTransitionApplication(from: ApplicationStatus, to: Applicatio
 
 export function canTransitionJob(from: JobStatus, to: JobStatus) {
   return jobTransitions[from].includes(to);
+}
+
+export function canSubmitEmployerVerification(status: EmployerVerification["status"]) {
+  return status === "pending" || status === "rejected";
+}
+
+export function canReviewEmployerVerification(status: EmployerVerification["status"]) {
+  return status === "under_review";
+}
+
+export function canVerifyEmployer(checks: EmployerVerification["checks"]) {
+  return Object.values(checks).every(Boolean);
 }
 
 export function canReleaseIdentity(application: Application) {

@@ -3,8 +3,8 @@ import { ArrowRight, Building2, ShieldCheck, UserRoundSearch } from "lucide-reac
 
 const steps = [
   { number: "01", title: "Employers share the requirement", text: "Structured job details come to our team first for verification and approval." },
-  { number: "02", title: "Candidates receive private matches", text: "Relevant candidates see anonymized opportunities and decide whether to show interest." },
-  { number: "03", title: "We screen and make the handoff", text: "Identity and contact details are released only after consent and interview clearance." },
+  { number: "02", title: "Employees receive private matches", text: "Relevant employees see jobs with company details hidden and decide whether to show interest." },
+  { number: "03", title: "We screen and arrange the interview", text: "Identity and contact details are shared only after consent and admin approval." },
 ];
 
 export default function Home() {
@@ -26,12 +26,12 @@ export default function Home() {
       <section className="hero shell-width">
         <div className="hero-copy">
           <h1>Recruitment with a trusted human in the middle.</h1>
-          <p>Employers find verified people. Candidates find legitimate work. Alpha Consultancy protects both sides until an interview is ready.</p>
+          <p>Employers find verified people. Employees find legitimate work. Alpha Consultancy protects both sides until an interview is ready.</p>
           <div className="hero-actions">
             <Link className="button button-primary" href="/tour">See the guided tour <ArrowRight size={18} /></Link>
             <Link className="text-link" href="/login">Open role workspaces</Link>
           </div>
-          <div className="trust-line"><ShieldCheck size={17} /> No direct contact before verified interview handoff</div>
+          <div className="trust-line"><ShieldCheck size={17} /> No direct contact before an admin-approved interview</div>
         </div>
         <div className="hero-workflow" aria-label="Recruitment workflow preview">
           <div className="workflow-topline">
@@ -46,10 +46,10 @@ export default function Home() {
           <div className="workflow-rail"><span /><b>Alpha Consultancy review</b><span /></div>
           <div className="workflow-party">
             <span className="workflow-icon candidate"><UserRoundSearch size={20} /></span>
-            <div><strong>Candidate match</strong><small>Profile shared with consent</small></div>
+            <div><strong>Employee match</strong><small>Profile shared with consent</small></div>
             <span className="status status-approved">92% match</span>
           </div>
-          <div className="handoff-box"><ShieldCheck size={22} /><div><strong>Interview handoff</strong><small>Details release only after both checks pass</small></div></div>
+          <div className="handoff-box"><ShieldCheck size={22} /><div><strong>Interview connection</strong><small>Details are shared only after both sides agree</small></div></div>
         </div>
       </section>
 
@@ -62,7 +62,7 @@ export default function Home() {
 
       <section className="privacy-section shell-width" id="privacy">
         <div><ShieldCheck size={28} /><h2>Built around privacy, not added later.</h2></div>
-        <p>Employers never browse candidate identities. Candidates never see company contact details before clearance. The admin team controls every release and leaves a complete audit trail.</p>
+        <p>Employers never browse employee identities. Employees never see employer identity, exact worksite, or contact details before clearance. The admin team controls every release and leaves a complete audit trail.</p>
         <Link className="button button-light" href="/tour">Follow the full journey <ArrowRight size={17} /></Link>
       </section>
       <footer className="marketing-footer shell-width"><span>© 2026 Alpha Consultancy</span><span>Privacy-first recruitment operations</span></footer>

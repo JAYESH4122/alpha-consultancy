@@ -9,22 +9,22 @@ import type { Role } from "@/lib/types";
 
 const navByRole = {
   candidate: [
-    { href: "/candidate", label: "Overview", icon: LayoutDashboard },
-    { href: "/candidate/matches", label: "Job matches", icon: BriefcaseBusiness },
-    { href: "/candidate/applications", label: "Applications", icon: ClipboardCheck },
-    { href: "/candidate/profile", label: "My profile", icon: UserRound },
+    { href: "/employee", label: "Overview", icon: LayoutDashboard },
+    { href: "/employee/matches", label: "Job matches", icon: BriefcaseBusiness },
+    { href: "/employee/applications", label: "Applications", icon: ClipboardCheck },
+    { href: "/employee/profile", label: "My profile", icon: UserRound },
   ],
   employer: [
     { href: "/employer", label: "Overview", icon: LayoutDashboard },
     { href: "/employer/jobs", label: "Jobs", icon: BriefcaseBusiness },
-    { href: "/employer/candidates", label: "Candidate pipeline", icon: ContactRound },
+    { href: "/employer/candidates", label: "Interested employees", icon: ContactRound },
     { href: "/employer/organization", label: "Organization", icon: Building2 },
   ],
   admin: [
-    { href: "/admin", label: "Operations", icon: LayoutDashboard },
+    { href: "/admin", label: "Overview", icon: LayoutDashboard },
     { href: "/admin/employers", label: "Employers", icon: Building2 },
     { href: "/admin/jobs", label: "Job approvals", icon: BriefcaseBusiness },
-    { href: "/admin/candidates", label: "Candidates", icon: UsersRound },
+    { href: "/admin/candidates", label: "Employees", icon: UsersRound },
     { href: "/admin/applications", label: "Screening", icon: ClipboardCheck },
     { href: "/admin/interviews", label: "Interviews", icon: CalendarDays },
     { href: "/admin/requests", label: "Privacy requests", icon: FileClock },
@@ -40,7 +40,7 @@ export function AppShell({ role, children }: { role: Role; children: React.React
   const unread = notifications.filter((notification) => notification.role === role && !notification.read).length;
   const roleNotifications = notifications.filter((notification) => notification.role === role);
   const nav = navByRole[role];
-  const roleLabel = role === "candidate" ? "Candidate" : role === "employer" ? "Employer" : "Admin operations";
+  const roleLabel = role === "candidate" ? "Employee" : role === "employer" ? "Employer" : "Admin operations";
 
   return (
     <div className="app-shell">
@@ -52,7 +52,8 @@ export function AppShell({ role, children }: { role: Role; children: React.React
         <div className="role-label"><span>{roleLabel}</span><ChevronDown size={15} /></div>
         <nav className="side-nav" aria-label={`${roleLabel} navigation`}>
           {nav.map(({ href, label, icon: Icon }) => {
-            const active = pathname === href || (href !== `/${role}` && pathname.startsWith(`${href}/`));
+            const roleRoot = role === "candidate" ? "/employee" : `/${role}`;
+            const active = pathname === href || (href !== roleRoot && pathname.startsWith(`${href}/`));
             return <Link key={href} href={href} className={active ? "active" : ""} onClick={() => setMobileOpen(false)}><Icon size={18} /><span>{label}</span></Link>;
           })}
         </nav>

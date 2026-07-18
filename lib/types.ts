@@ -41,10 +41,12 @@ export type Job = {
   experienceMin: number;
   education: string;
   description: string;
+  employeeSummary: string;
   requiredSkills: string[];
   preferredSkills: string[];
   requiredDocuments: string[];
   screeningQuestions: string[];
+  employeeScreeningQuestions: string[];
   interviewAvailability: string;
   status: JobStatus;
   createdAt: string;
@@ -146,6 +148,12 @@ export type EmployerVerification = {
   status: "pending" | "under_review" | "verified" | "rejected";
   notes: string;
   updatedAt: string;
+  submittedAt?: string;
+  checks: {
+    registration: boolean;
+    contact: boolean;
+    dataUseTerms: boolean;
+  };
 };
 
 export type DemoState = {
